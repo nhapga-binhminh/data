@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhập Liệu</title>
+    <style>
+              /* Reset cơ bản */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            
+        }
+
+        .tab-container {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f1f1f1;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #ddd;
+            border: 1px solid #ccc;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            border-bottom: none;
+            font-weight: bold;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - 40px); /* Trừ chiều cao của tab */
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: none;
+            overflow-y: auto; /* Cuộn riêng từng tab nếu nội dung quá dài */
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .group {
+            flex: 1 1 calc(50% - 20px); /* Chia đôi chiều ngang */
+        }
+
+        .group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .group input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        textarea {
+            width: 100%;
+            height: calc(100% - 40px);
+            resize: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+      <div class="tab-container">
+        <div class="tab active" data-target="formTab">Nhập Liệu</div>
+        <div class="tab" data-target="codeTab">Mã Khác</div>
+    </div>
+    <div class="content active" id="formTab">
+    <h2>NHẬP LIỆU</h2>
+    <div id="status"></div>
+    <form id="dataForm">
+        <!-- Previous form fields remain the same -->
+        <div class="group">
+            <label>Ngày Nhập: <span id="ngayNhap"></span></label>
+            <input type="hidden" name="ngay_nhap" id="hiddenNgayNhap"><br>
+            <label>Ngày Cân: <input type="datetime-local" name="ngay_can" required></label>
+        </div>
+
+        <div class="group">
+            <label>Số Xe: <input type="text" name="so_xe" required value="1"></label>
+            <label>Tên Tài Xế: <input type="text" name="ten_tai_xe" required value="1"></label>
+        </div>
+
+        <h3>Customer (Trại)</h3>
+        <div class="group">
+            <label>Số Con Trại: <input type="number" name="so_con_trai" required value="1"></label>
+            <label>Số Kg Trại: <input type="number" step="0.01" name="so_kg_trai" required value="1"></label>
+        </div>
+
+        <h3>Home (Lò)</h3>
+        <div class="group">
+            <label>Mã Phiếu: <input type="text" name="ma_phieu" required value="1"></label>
+            <label>Số Con Lò: <input type="number" name="so_con_lo" required value="1"></label>
+            <label>Số Kg Lò: <input type="number" step="0.01" name="so_kg_lo" required value="1"></label>
+        </div>
+        <div class="group">
+            <label>Số Con Chết: <input type="number" name="so_con_chet" required value="1"></label>
+            <label>Số Kg Chết: <input type="number" step="0.01" name="so_kg_chet" required value="1"></label>
+        </div>
+
+      <div class="product-column">
+        <h3>Sản Phẩm Chính</h3>
+        <div class="group">
+            <label>Gà Lựa 9P+Lotteria(Con): <input type="number" name="ga_lua_9p_con" value="99"></label>
+            <label>Gà Lựa 9P+Lotteria(Kg): <input type="number" step="0.01" name="ga_lua_9p_kg" value="1"></label>
+            <label>Đùi Ngang 75: <input type="number" step="0.01" name="dui_ngang_75" value="1"></label>
+            <label>Đùi Ngang 55: <input type="number" step="0.01" name="dui_ngang_55" value="1"></label>
+            <label>Đùi Ngang 45-55: <input type="number" step="0.01" name="dui_ngang_4555" value="1"></label>
+            <label>Đùi Ngang Xô Lớn: <input type="number" step="0.01" name="dui_ngang_xo_lon" value="1"></label>
+            <label>Đùi Ngang Xô Nhỏ: <input type="number" step="0.01" name="dui_ngang_xo_nho" value="1"></label>
+            <label>Bọng Ức: <input type="number" step="0.01" name="bong_uc" value="1"></label>
+            <label>Gà CN Bọng (Con): <input type="number" step="0.01" name="cn_bong_con" value="1"></label>
+            <label>Gà CN Bọng (Kg): <input type="number" step="0.01" name="cn_bong_kg" value="1"></label>
+            <label>Cánh: <input type="number" step="0.01" name="canh" value="1"></label>
+            <label>Đầu: <input type="number" step="0.01" name="dau" value="1"></label>
+            <label>Chân: <input type="number" step="0.01" name="chan" value="1"></label>
+        </div>
+    </div>
+      <div class="product-container">
+        <div class="product-column">
+        <h3>Sản Phẩm Phụ</h3>
+        <div class="group">
+            <label>Tim: <input type="number" step="0.01" name="tim" value="1"></label>
+            <label>Gan: <input type="number" step="0.01" name="gan" value="1"></label>
+            <label>Lòng: <input type="number" step="0.01" name="long" value="1"></label>
+            <label>Mề: <input type="number" step="0.01" name="me" value="1"></label>
+            <label>Mỡ: <input type="number" step="0.01" name="mo" value="1"></label>
+            <label>Ngọc Kê: <input type="number" step="0.01" name="ngoc_ke" value="1"></label>
+        </div>
+    </div>
+        <div class="group">
+          <button type="submit">Nhập</button>
+        </div>
+        
+    </form>
+  </div>
+      <!-- Tab 2: Mã Khác -->
+    <div class="content" id="codeTab">
+        <h2>Viết Mã Khác</h2>
+        <textarea style="width: 100%; height: 300px;" placeholder="Nhập mã ở đây..."></textarea>
+    </div>
+    <script>
+        // Set current date and time
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('ngayNhap').textContent = now.toLocaleString();
+            document.getElementById('hiddenNgayNhap').value = now.toISOString().slice(0, 16);
+        }
+        updateDateTime();
+
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            // Add ngayNhap
+            data.ngayNhap = document.getElementById('ngayNhap').textContent;
+
+            // Replace with your deployed Google Apps Script URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwYTCdPM5HtIlVoPkUJvtw_m1cWgZj1nAuIcphA0itZ075MxdjAXpsXzJw3YJdsq4hI/exec';
+
+            // Send data using JSONP to avoid CORS
+            const queryString = Object.keys(data)
+                .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+                .join('&');
+
+            // Create a temporary form and submit it
+            const tempForm = document.createElement('form');
+            tempForm.action = scriptURL;
+            tempForm.method = 'POST';
+            tempForm.target = 'hidden-iframe';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'data';
+            input.value = JSON.stringify(data);
+            tempForm.appendChild(input);
+
+            // Create hidden iframe for response
+            const iframe = document.createElement('iframe');
+            iframe.name = 'hidden-iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            iframe.onload = function() {
+                document.getElementById('status').innerHTML = '<p class="success">Dữ liệu đã được gửi thành công!</p>';
+                document.getElementById('dataForm').reset();
+                updateDateTime();
+                document.body.removeChild(iframe);
+            };
+
+            document.body.appendChild(tempForm);
+            tempForm.submit();
+            document.body.removeChild(tempForm);
+        });
+        
+                // Tab Switching Logic
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>                     
