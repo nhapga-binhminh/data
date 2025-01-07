@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Báo Cáo Dữ Liệu</title>
+    <style>
+      #dataContainer , .form-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust columns based on your layout */
+    gap: 10px; /* Space between fields */
+    margin-top: 20px; /* Space above the data container */
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px; /* Space below each field group */
+    
+}
+
+.field-group label {
+    font-weight: bold; /* Make labels bold */
+    margin-bottom: 5px; /* Space between label and input */
+}
+
+.field-group input , .form-group {
+    padding: 8px; /* Padding inside input fields */
+    border: 1px solid #ccc; /* Light border around input */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size for input text */
+}
+
+.loading {
+    display: none; /* Hidden by default, shown when loading */
+    font-size: 16px; /* Font size for loading message */
+    color: #007bff; /* Loading message color */
+    margin-top: 20px; /* Space above loading message */
+}
+.highlight {
+    background-color: #ffff99; /* Light yellow background */
+    border: 1px solid #ffcc00; /* Darker border for emphasis */
+}
+    </style>
+    
+  </head>
+  <body>
+    <div class="form-group">
+      <label for="dateSelect">Chọn Ngày:</label>
+      <input type="date" id="dateSelect" onchange="loadTickets()" /></br>
+          <label for="ticketSelect">Chọn Số Phiếu:</label>
+      <select id="ticketSelect" onchange="loadData()">
+        <option value="">-- Chọn số phiếu --</option>
+      </select>
+    </div>
+    <div class="loading" id="loading">Đang tải dữ liệu...</div>
+    <div class="form-group">
+    <div id="dataContainer"></div>
+    </div>
+    <script>
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbzguhHDAb7A-lB4gQ4GsD32oPwQ7CE-GNRwdDMeWVY0W8b1Se4C471BxhWmVVeVegy1YA/exec";
+
+      async function loadTickets() {
+        const date = document.getElementById("dateSelect").value;
+        showLoading();
+
+        try {
+          const response = await fetch(`${scriptUrl}?action=getTickets&date=${date}`);
+          const tickets = await response.json();
+          updateTickets(tickets);
+        } catch (error) {
+          console.error("Error loading tickets:", error);
+          alert("Có lỗi khi tải danh sách phiếu. Vui lòng thử lại.");
+        } finally {
+          hideLoading();
+        }
+      }
+
+      function updateTickets(tickets) {
+        const select = document.getElementById("ticketSelect");
+        select.innerHTML = '<option value="">-- Chọn số phiếu --</option>';
+        tickets.forEach(ticket => {
+          const option = document.createElement("option");
+          option.value = ticket.ticket; // Giá trị là số phiếu
+          option.textContent = `${ticket.ticket} - ${ticket.vehicle}`; // Hiển thị "số phiếu - số xe"
+          select.appendChild(option);
+        });
+      }
+
+      async function loadData() {
+        const date = document.getElementById("dateSelect").value;
+        const ticket = document.getElementById("ticketSelect").value;
+
+        if (date && ticket) {
+          showLoading();
+
+          try {
+            const response = await fetch(
+              `${scriptUrl}?action=getData&date=${encodeURIComponent(date)}&ticket=${encodeURIComponent(ticket)}`
+            );
+            const data = await response.json();
+            displayData(data);
+          } catch (error) {
+            console.error("Error loading data:", error);
+            alert("Có lỗi khi tải dữ liệu. Vui lòng thử lại.");
+          } finally {
+            hideLoading();
+          }
+        }
+      }
+
+function displayData(data) {
+    const container = document.getElementById("dataContainer");
+    container.innerHTML = "";
+
+    if (!data || data.error) {
+        container.innerHTML = "<p>Không tìm thấy dữ liệu</p>";
+        return;
+    }
+
+    const highlightFields = [
+        "Phần trăm hao hụt",
+        "Tổng Sản Phẩm Chính",
+        "Tổng Sản phẩm phụ",
+        "Tỷ Lệ Thu Hồi",
+        "Tổng Tỷ lệ Thu Hồi"
+    ];
+
+    for (let key in data) {
+        const fieldGroup = document.createElement("div");
+        fieldGroup.className = "field-group";
+
+        const label = document.createElement("label");
+        label.textContent = key;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = typeof data[key] === "number" ? data[key].toFixed(2) : (data[key] !== null ? data[key] : "");
+        input.id = key;
+
+        // Apply highlight class if the key is in the highlightFields array
+        if (highlightFields.includes(key)) {
+            input.classList.add("highlight");
+        }
+
+        fieldGroup.appendChild(label);
+        fieldGroup.appendChild(input);
+        container.appendChild(fieldGroup);
+    }
+}
+
+      function showLoading() {
+        document.getElementById("loading").style.display = "block";
+      }
+
+      function hideLoading() {
+        document.getElementById("loading").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
