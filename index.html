@@ -5,102 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nhập Liệu</title>
     <style>
-              /* Reset cơ bản */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* Reset cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            
-        }
+body {
+    font-family: Arial, sans-serif;
+    padding: 25px;
+    background-color: #f9f9f9; /* Nền sáng */
+}
 
-        .tab-container {
-            display: flex;
-            justify-content: space-around;
-            background-color: #f1f1f1;
-            border-bottom: 2px solid #ddd;
-        }
+.tab-container {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f1f1f1;
+    border-bottom: 2px solid #ddd;
+}
 
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            background-color: #ddd;
-            border: 1px solid #ccc;
-        }
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s; /* Hiệu ứng chuyển đổi */
+}
 
-        .tab.active {
-            background-color: #fff;
-            border-bottom: none;
-            font-weight: bold;
-        }
+.tab:hover {
+    background-color: #ccc; /* Màu khi hover */
+}
 
-        .main-container {
-            display: flex;
-            flex-direction: row;
-            height: calc(100vh - 40px); /* Trừ chiều cao của tab */
-        }
+.tab.active {
+    background-color: #fff;
+    border-bottom: none;
+    font-weight: bold;
+}
 
-        .content {
-            flex: 1;
-            padding: 20px;
-            display: none;
-            overflow-y: auto; /* Cuộn riêng từng tab nếu nội dung quá dài */
-        }
+.main-container {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 40px); /* Trừ chiều cao của tab */
+}
 
-        .content.active {
-            display: block;
-        }
+.content {
+    flex: 1;
+    padding: 20px;
+    display: none;
+    overflow-y: auto; /* Cuộn riêng từng tab nếu nội dung quá dài */
+    background-color: #ffffff; /* Nền trắng cho nội dung */
+    border-radius: 5px; /* Bo góc cho nội dung */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng cho nội dung */
+}
 
-        form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+.content.active {
+    display: block;
+}
 
-        .group {
-            flex: 1 1 calc(50% - 20px); /* Chia đôi chiều ngang */
-        }
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
 
-        .group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9em;
-        }
+.group {
+    flex: 1 1 calc(50% - 20px); /* Chia đôi chiều ngang */
+}
 
-        .group input {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+.group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
 
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        textarea {
-            width: 100%;
-            height: calc(100% - 40px);
-            resize: none;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+.group input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    width: 130px;
+    height: 30px;
+    margin: 3px;
+    background: #0725ff;
+    border-radius: 7px;
+    border: none;
+    color: #ffff;
+  
+}
     </style>
 </head>
 <body>
@@ -114,67 +110,77 @@
     <form id="dataForm">
         <!-- Previous form fields remain the same -->
         <div class="group">
+              <!-- Ô input ẩn để lưu số phiếu -->
+            <input type="hidden" name="sophieu" id="sophieu">
             <label>Ngày Nhập: <span id="ngayNhap"></span></label>
             <input type="hidden" name="ngay_nhap" id="hiddenNgayNhap"><br>
-            <label>Ngày Cân: <input type="datetime-local" name="ngay_can" required></label>
+            <label>Ngày Cân: <input type="date" name="ngay_can" required></label>
         </div>
 
         <div class="group">
             <label>Số Xe: <input type="text" name="so_xe" required ></label>
-            <label>Tên Tài Xế: <input type="text" name="ten_tai_xe" required ></label>
+            <label>Tên Tài Xế: <input type="text" name="ten_tai_xe" required style=""></label>
         </div>
 
         <h3>Customer (Trại)</h3>
         <div class="group">
-            <label>Số Con Trại: <input type="number" name="so_con_trai" required ></label>
-            <label>Số Kg Trại: <input type="number" step="0.01" name="so_kg_trai" required ></label>
+            <label>Số Con Trại: <input type="number" name="so_con_trai"></label>
+            <label>Số Kg Trại: <input type="number" step="0.01"  name="so_kg_trai" ></label>
         </div>
-
+        
         <h3>Home (Lò)</h3>
         <div class="group">
-            <label>Mã Phiếu: <input type="text" name="ma_phieu" required ></label>
-            <label>Số Con Lò: <input type="number" name="so_con_lo" required ></label>
-            <label>Số Kg Lò: <input type="number" step="0.01" name="so_kg_lo" required ></label>
+            <label>Mã Phiếu: <input type="text" name="ma_phieu"  ></label>
+            <label>Số Con Lò: <input type="number" name="so_con_lo"  ></label>
+            <label>Số Kg Lò: <input type="number" step="0.01" name="so_kg_lo"  ></label>
         </div>
         <div class="group">
             <label>Số Con Chết: <input type="number" name="so_con_chet" value="0"></label>
-            <label>Số Kg Chết: <input type="number" step="0.01" name="so_kg_chet"  value="0"></label>
+            <label>Số Kg Chết: <input type="number" step="0.01"  name="so_kg_chet"  value="0"></label>
         </div>
 
       <div class="product-column">
         <h3>Sản Phẩm Chính</h3>
         <div class="group">
-            <label>Gà Lựa 9P+Lotteria(Con): <input type="number" name="ga_lua_9p_con" value="0"></label>
-            <label>Gà Lựa 9P+Lotteria(Kg): <input type="number" step="0.01" name="ga_lua_9p_kg" value="0"></label>
-            <label>Đùi Ngang 75: <input type="number" step="0.01" name="dui_ngang_75" value="0"></label>
-            <label>Đùi Ngang 55: <input type="number" step="0.01" name="dui_ngang_55" value="0"></label>
-            <label>Đùi Ngang 45-55: <input type="number" step="0.01" name="dui_ngang_4555" value="0"></label>
-            <label>Đùi Ngang Xô Lớn: <input type="number" step="0.01" name="dui_ngang_xo_lon" value="0"></label>
-            <label>Đùi Ngang Xô Nhỏ: <input type="number" step="0.01" name="dui_ngang_xo_nho" value="0"></label>
-            <label>Bọng Ức: <input type="number" step="0.01" name="bong_uc" value="0"></label>
-            <label>Gà CN Bọng (Con): <input type="number" step="0.01" name="cn_bong_con" value="0"></label>
-            <label>Gà CN Bọng (Kg): <input type="number" step="0.01" name="cn_bong_kg" value="0"></label>
-            <label>Cánh: <input type="number" step="0.01" name="canh" value="0"></label>
-            <label>Đầu: <input type="number" step="0.01" name="dau" value="0"></label>
-            <label>Chân: <input type="number" step="0.01" name="chan" value="0"></label>
+            <label>Gà Lựa 9P+Lotteria(Con): <input type="number" name="ga_lua_9p_con" value="0" ></label>
+            <label>Gà Lựa 9P+Lotteria(Kg): <input type="number"  name="ga_lua_9p_kg" value="0" step="0.01"></label>
+            <label>Đùi Ngang 75: <input type="number"  name="dui_ngang_75" value="0" step="0.01"></label>
+            <label>Đùi Ngang 55: <input type="number"  name="dui_ngang_55" value="0" step="0.01"></label>
+            <label>Đùi Ngang 45-55: <input type="number"  name="dui_ngang_4555" value="0" step="0.01"></label>
+            <label>Đùi Ngang Xô Lớn: <input type="number"  name="dui_ngang_xo_lon" value="0" step="0.01"></label>
+            <label>Đùi Ngang Xô Nhỏ: <input type="number"  name="dui_ngang_xo_nho" value="0" step="0.01"></label>
+            <label>Bọng Ức: <input type="number"  name="bong_uc" value="0" step="0.01"></label>
+            <label>Gà CN Bọng (Con): <input type="number"  name="cn_bong_con" value="0" ></label>
+            <label>Gà CN Bọng (Kg): <input type="number"  name="cn_bong_kg" value="0" step="0.01"></label>
+            <label>Cánh: <input type="number"  name="canh" value="0" step="0.01"></label>
+            <label>Đầu: <input type="number"  name="dau" value="0" step="0.01"></label>
+            <label>Chân: <input type="number"  name="chan" value="0" step="0.01"></label>
         </div>
     </div>
       <div class="product-container">
         <div class="product-column">
         <h3>Sản Phẩm Phụ</h3>
         <div class="group">
-            <label>Tim: <input type="number" step="0.01" name="tim" value="0"></label>
-            <label>Gan: <input type="number" step="0.01" name="gan" value="0"></label>
-            <label>Lòng: <input type="number" step="0.01" name="long" value="0"></label>
-            <label>Mề: <input type="number" step="0.01" name="me" value="0"></label>
-            <label>Mỡ: <input type="number" step="0.01" name="mo" value="0"></label>
-            <label>Ngọc Kê: <input type="number" step="0.01" name="ngoc_ke" value="0"></label>
+            <label>Tim: <input type="number"  name="tim" value="0" step="0.01"></label>
+            <label>Gan: <input type="number"  name="gan" value="0" step="0.01"></label>
+            <label>Lòng: <input type="number"  name="long" value="0" step="0.01"></label>
+            <label>Mề: <input type="number"  name="me" value="0" step="0.01"></label>
+            <label>Mỡ: <input type="number"  name="mo" value="0" step="0.01"></label>
+            <label>Ngọc Kê: <input type="number"  name="ngoc_ke" value="0" step="0.01"></label>
         </div>
     </div>
         <div class="group">
           <button type="submit">Nhập</button>
         </div>
-        
+        <button id="viewReportButton">Xem Báo Cáo</button>
+
+<!-- Form Báo Cáo -->
+    <div id="reportForm" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1000;">
+    <div style="position: relative; margin: 50px auto; width: 90%; max-width: 1200px; height: 80%; background: white; padding: 20px; border-radius: 8px;">
+        <button id="closeReportButton" style="position: absolute; top: 10px; right: 10px;">&times;</button>
+        <iframe src="https://nhapga-binhminh.github.io/data/report-form.html" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+</div>
     </form>
   </div>
       <!-- Tab 2: Mã Khác -->
@@ -205,7 +211,7 @@
             data.ngayNhap = document.getElementById('ngayNhap').textContent;
 
             // Replace with your deployed Google Apps Script URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbxt9vdnFMKwDRaaEXgI4G9PModLqhhc7XOVYAZ0nD2WmvTXWyBnbbF1eVHGiJdGfmWo/exec';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzguhHDAb7A-lB4gQ4GsD32oPwQ7CE-GNRwdDMeWVY0W8b1Se4C471BxhWmVVeVegy1YA/exec';
 
             // Send data using JSONP to avoid CORS
             const queryString = Object.keys(data)
@@ -255,6 +261,28 @@
                 document.getElementById(tab.dataset.target).classList.add('active');
             });
         });
+        
+        const viewReportButton = document.getElementById('viewReportButton');
+    const reportForm = document.getElementById('reportForm');
+    const closeReportButton = document.getElementById('closeReportButton');
+
+      viewReportButton.addEventListener('click', () => {
+          reportForm.style.display = 'block';
+          // Reset nội dung của reportForm nếu cần
+          const iframe = reportForm.querySelector('iframe');
+          iframe.src = iframe.src; // Tải lại iframe
+      });
+
+    closeReportButton.addEventListener('click', () => {
+        reportForm.style.display = 'none';
+    });
+
+    // Đóng form khi click bên ngoài
+    reportForm.addEventListener('click', (e) => {
+        if (e.target === reportForm) {
+            reportForm.style.display = 'none';
+        }
+    });
     </script>
 </body>
 </html>                     
