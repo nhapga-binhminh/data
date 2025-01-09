@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa dữ liệu phiếu</title>
+</head>
+<body>
+    <div class="form-group">
+        <label for="ticketSelect">Chọn Số Phiếu (Chỉ hiển thị phiếu trong 7 ngày gần nhất):</label>
+        <select id="ticketSelect" onchange="loadData()">
+            <option value="">-- Chọn số phiếu --</option>
+        </select>
+        <div id="ticketInfo" class="ticket-info"></div>
+    </div>
+
+    <div class="button-group">
+        <button id="editBtn" class="btn btn-edit" onclick="startEdit()">Sửa</button>
+        <button id="saveBtn" class="btn btn-save" onclick="saveData()" style="display: none;">Lưu</button>
+        <button id="cancelBtn" class="btn btn-cancel" onclick="cancelEdit()" style="display: none;">Hủy</button>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+    <div id="loading" class="loading">Đang tải dữ liệu...</div>
+    
+    <div class="form-group">
+        <div id="dataContainer"></div>
+    </div>
+
+    <script>
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbwMsDOnyM09bHYHUOLGAsh8UQym335BAqkPC2PuW0K7DN-pVr6Map_YrYx1yWNH8tZ3_Q/exec";
+
+        let originalData = null;
+
+        // Load available tickets when page loads
+        window.onload = loadEditableTickets;
+
+        async function loadEditableTickets() {
+            showLoading();
+            try {
+                const response = await fetch(`${scriptUrl}?action=getEditableTickets`);
+                const tickets = await response.json();
+                
+                if (!tickets || tickets.error) {
+                    showError("Không thể tải danh sách phiếu!");
+                    return;
+                }
+
+                updateTicketSelect(tickets);
+                hideError();
+            } catch (error) {
+                showError("Có lỗi khi tải danh sách phiếu!");
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function updateTicketSelect(tickets) {
+            const select = document.getElementById("ticketSelect");
+            select.innerHTML = '<option value="">-- Chọn số phiếu --</option>';
+            
+            tickets.tickets.forEach(ticket => {
+                const option = document.createElement("option");
+                option.value = ticket.ticket;
+                option.textContent = `${ticket.ticket} - ${ticket.date}`;
+                select.appendChild(option);
+            });
+        }
+
+        async function loadData() {
+            const selectedTicket = document.getElementById("ticketSelect").value;
+            if (!selectedTicket) {
+                document.getElementById("dataContainer").innerHTML = "";
+                document.getElementById("ticketInfo").innerHTML = "";
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(`${scriptUrl}?action=getData&ticket=${encodeURIComponent(selectedTicket)}`);
+                const data = await response.json();
+                
+                if (!data || data.error) {
+                    showError("Không tìm thấy dữ liệu!");
+                    return;
+                }
+
+                originalData = { ...data };
+                displayData(data);
+                updateTicketInfo(data);
+                hideError();
+            } catch (error) {
+                showError("Có lỗi khi tải dữ liệu!");
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function updateTicketInfo(data) {
+            const info = document.getElementById("ticketInfo");
+            info.innerHTML = `
+                <strong>Thông tin phiếu:</strong><br>
+                Ngày nhập: ${new Date(data.date).toLocaleDateString('vi-VN')}<br>
+                Số phiếu: ${data.ticket}
+            `;
+        }
+
+        function displayData(data) {
+            const container = document.getElementById("dataContainer");
+            container.innerHTML = "";
+
+            Object.keys(data.data).forEach(key => {
+                const fieldGroup = document.createElement("div");
+                fieldGroup.className = "field-group";
+
+                const label = document.createElement("label");
+                label.textContent = key;
+
+                const input = document.createElement("input");
+                input.type = "text";
+                input.value = data.data[key];
+                input.id = key;
+                input.readOnly = true;
+
+                fieldGroup.appendChild(label);
+                fieldGroup.appendChild(input);
+                container.appendChild(fieldGroup);
+            });
+        }
+
+        function startEdit() {
+            const inputs = document.querySelectorAll("#dataContainer input");
+            inputs.forEach(input => {
+                input.readOnly = false;
+                input.classList.add('editable-input');
+            });
+
+            document.getElementById("editBtn").style.display = "none";
+            document.getElementById("saveBtn").style.display = "inline-block";
+            document.getElementById("cancelBtn").style.display = "inline-block";
+        }
+
+        function cancelEdit() {
+            displayData(originalData);
+            document.getElementById("editBtn").style.display = "inline-block";
+            document.getElementById("saveBtn").style.display = "none";
+            document.getElementById("cancelBtn").style.display = "none";
+        }
+
+        async function saveData() {
+    const updatedData = {};
+    const inputs = document.querySelectorAll("#dataContainer input");
+
+    // Debug: Log dữ liệu đã thay đổi
+    inputs.forEach(input => {
+        updatedData[input.id] = input.value;
+    });
+
+    console.log('Data to be saved:', updatedData); // Log dữ liệu để kiểm tra
+
+    const ticket = document.getElementById("ticketSelect").value;
+    if (!ticket) {
+        showError("Vui lòng chọn số phiếu!");
+        return;
+    }
+
+    showLoading();
+    try {
+        const response = await fetch(scriptUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                action: "updateData",
+                ticket: ticket,
+                data: updatedData
+            }),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("Cập nhật thành công!");
+            loadData();
+        } else {
+            console.error('Error from server:', result.error); // Log lỗi trả về từ server
+            showError("Có lỗi khi cập nhật dữ liệu!");
+        }
+    } catch (error) {
+        console.error('Error during fetch request:', error); // Log lỗi nếu có khi gửi yêu cầu
+        showError("Có lỗi khi cập nhật dữ liệu!");
+    } finally {
+        hideLoading();
+        document.getElementById("editBtn").style.display = "inline-block";
+        document.getElementById("saveBtn").style.display = "none";
+        document.getElementById("cancelBtn").style.display = "none";
+    }
+}
+
+
+
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+        }
+
+        function hideLoading() {
+            document.getElementById("loading").style.display = "none";
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById("errorMessage");
+            errorElement.textContent = message;
+            errorElement.style.display = "block";
+        }
+
+        function hideError() {
+            document.getElementById("errorMessage").style.display = "none";
+        }
+    </script>
+</body>
+</html>
