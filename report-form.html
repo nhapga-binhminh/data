@@ -3,44 +3,101 @@
   <head>
     <meta charset="UTF-8">
     <title>Báo Cáo Dữ Liệu</title>
-    <style>
-      #dataContainer , .form-group {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Adjust columns based on your layout */
-    gap: 10px; /* Space between fields */
-    margin-top: 20px; /* Space above the data container */
-}
+        <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+  }
 
-.field-group {
+  #dataContainer, .form-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin: 20px;
+  }
+
+  .form-group {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .field-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px; /* Space below each field group */
-    
-}
+    margin-bottom: 10px;
+  }
 
-.field-group label {
-    font-weight: bold; /* Make labels bold */
-    margin-bottom: 5px; /* Space between label and input */
-}
+  .field-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
 
-.field-group input , .form-group {
-    padding: 8px; /* Padding inside input fields */
-    border: 1px solid #ccc; /* Light border around input */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 14px; /* Font size for input text */
-}
+  .field-group input, .form-group select ,#dateSelect{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
 
-.loading {
-    display: none; /* Hidden by default, shown when loading */
-    font-size: 16px; /* Font size for loading message */
-    color: #007bff; /* Loading message color */
-    margin-top: 20px; /* Space above loading message */
-}
-.highlight {
-    background-color: #ffff99; /* Light yellow background */
-    border: 1px solid #ffcc00; /* Darker border for emphasis */
-}
-    </style>
+  .field-group input:focus, .form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  /* Nổi bật các ô input quan trọng */
+  .field-group input.highlight {
+    background-color: #fff7d6;
+    border: 1px solid #ffcc00;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+    transition: transform 0.2s ease;
+  }
+
+  .field-group input.highlight:focus {
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi focus */
+    border-color: #ffa500;
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.7);
+  }
+
+  .loading {
+    display: none;
+    font-size: 16px;
+    color: #007bff;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  /* Đáp ứng thiết bị di động */
+  @media (max-width: 600px) {
+    #dataContainer, .form-group {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group {
+      padding: 10px;
+    }
+
+    .field-group input {
+      font-size: 16px;
+      padding: 12px;
+    }
+
+    .loading {
+      font-size: 18px;
+    }
+  }
+</style>
     
   </head>
   <body>
