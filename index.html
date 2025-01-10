@@ -175,12 +175,12 @@ button {
           <button type="submit">Nhập</button>
         </div>
         <button id="viewReportButton">Xem Báo Cáo</button>
-
+         <button id="editReportButton">Xem Báo Cáo</button>
 <!-- Form Báo Cáo -->
     <div id="reportForm" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1000;">
     <div style="position: relative; margin: 50px auto; width: 90%; max-width: 1200px; height: 80%; background: white; padding: 20px; border-radius: 8px;">
         <button id="closeReportButton" style="position: absolute; top: 10px; right: 10px;">&times;</button>
-        <iframe src="https://nhapga-binhminh.github.io/data/report-form.html" style="width: 100%; height: 100%; border: none;"></iframe>
+      <iframe src="" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 </div>
     </form>
@@ -264,27 +264,25 @@ button {
             });
         });
         
-        const viewReportButton = document.getElementById('viewReportButton');
-    const reportForm = document.getElementById('reportForm');
-    const closeReportButton = document.getElementById('closeReportButton');
+// Xử lý báo cáo (mở/đóng iframe hiển thị)
+const reportForm = document.getElementById('reportForm');
+const iframe = reportForm.querySelector('iframe');
 
-      viewReportButton.addEventListener('click', () => {
-          reportForm.style.display = 'block';
-          // Reset nội dung của reportForm nếu cần
-          const iframe = reportForm.querySelector('iframe');
-          iframe.src = iframe.src; // Tải lại iframe
-      });
+function toggleReport(show, url = '') {
+    reportForm.style.display = show ? 'block' : 'none';
+    if (show && url) iframe.src = url;
+}
 
-    closeReportButton.addEventListener('click', () => {
-        reportForm.style.display = 'none';
-    });
+document.getElementById('viewReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/report-form.html');
+document.getElementById('editReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/edit-tylecao.html');
+document.getElementById('closeReportButton').onclick = () => toggleReport(false);
 
-    // Đóng form khi click bên ngoài
-    reportForm.addEventListener('click', (e) => {
-        if (e.target === reportForm) {
-            reportForm.style.display = 'none';
-        }
-    });
+reportForm.onclick = (e) => { if (e.target === reportForm) toggleReport(false); };
+
+// Đặt giá trị mặc định cho input number nếu không có giá trị
+document.querySelectorAll('input[type="number"]').forEach(input => {
+    if (!input.value) input.value = 0;
+});
     </script>
 </body>
 </html>                     
