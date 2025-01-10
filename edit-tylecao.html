@@ -4,6 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chỉnh sửa dữ liệu phiếu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .form-group {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        #dataContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .field-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .field-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin: 10px 0;
+            font-weight: bold;
+            display: none;
+        }
+
+        .editable-input {
+            background-color: #fff !important;
+            border: 2px solid #007bff !important;
+        }
+
+        .ticket-info {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
     <div class="form-group">
@@ -26,13 +136,10 @@
     <div class="form-group">
         <div id="dataContainer"></div>
     </div>
-
-    <script>
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbwLiJKN6L8taHR6NJuyZoOorfK29N61YQn9wB2y9eojwi0jXGF8a_VOhKOS26zyqhU/exec";
-
+<script>
+   const scriptUrl = "https://script.google.com/macros/s/AKfycbwLiJKN6L8taHR6NJuyZoOorfK29N61YQn9wB2y9eojwi0jXGF8a_VOhKOS26zyqhU/exec";
         let originalData = null;
 
-        // Load available tickets when page loads
         window.onload = loadEditableTickets;
 
         async function loadEditableTickets() {
@@ -99,36 +206,44 @@
 
         function updateTicketInfo(data) {
             const info = document.getElementById("ticketInfo");
-            info.innerHTML = `
+            info.innerHTML = ` 
                 <strong>Thông tin phiếu:</strong><br>
                 Ngày nhập: ${new Date(data.date).toLocaleDateString('vi-VN')}<br>
                 Số phiếu: ${data.ticket}
             `;
         }
 
-        function displayData(data) {
-            const container = document.getElementById("dataContainer");
-            container.innerHTML = "";
+function displayData(data) {
+    const container = document.getElementById("dataContainer");
+    container.innerHTML = "";
 
-            Object.keys(data.data).forEach(key => {
-                const fieldGroup = document.createElement("div");
-                fieldGroup.className = "field-group";
+    Object.entries(data.data).forEach(([fieldName, value]) => {
+        const fieldGroup = document.createElement("div");
+        fieldGroup.className = "field-group";
 
-                const label = document.createElement("label");
-                label.textContent = key;
+        const label = document.createElement("label");
+        label.textContent = fieldName; // Sử dụng tên trường thực tế
+        label.htmlFor = fieldName;
 
-                const input = document.createElement("input");
-                input.type = "text";
-                input.value = data.data[key];
-                input.id = key;
-                input.readOnly = true;
+        const input = document.createElement("input");
+        input.id = fieldName;
 
-                fieldGroup.appendChild(label);
-                fieldGroup.appendChild(input);
-                container.appendChild(fieldGroup);
-            });
+        // Kiểm tra nếu tên trường là "Ngày Cân"
+        if (fieldName === "Ngày Cân") {
+            input.type = "date"; // Đặt kiểu là date
+            input.value = value; // Gán giá trị cho input
+        } else {
+            input.type = "text"; // Các trường khác vẫn là text
+            input.value = value;
         }
 
+        input.readOnly = true;
+
+        fieldGroup.appendChild(label);
+        fieldGroup.appendChild(input);
+        container.appendChild(fieldGroup);
+    });
+}
         function startEdit() {
             const inputs = document.querySelectorAll("#dataContainer input");
             inputs.forEach(input => {
@@ -148,16 +263,14 @@
             document.getElementById("cancelBtn").style.display = "none";
         }
 
-        async function saveData() {
+// Cập nhật hàm saveData để sử dụng tên trường thực tế
+async function saveData() {
     const updatedData = {};
     const inputs = document.querySelectorAll("#dataContainer input");
-
-    // Debug: Log dữ liệu đã thay đổi
+    
     inputs.forEach(input => {
-        updatedData[input.id] = input.value;
+        updatedData[input.id] = input.value; // id bây giờ là tên trường thực tế
     });
-
-    console.log('Data to be saved:', updatedData); // Log dữ liệu để kiểm tra
 
     const ticket = document.getElementById("ticketSelect").value;
     if (!ticket) {
@@ -169,8 +282,9 @@
     try {
         const response = await fetch(scriptUrl, {
             method: "POST",
+            mode: "no-cors",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "text/plain;charset=utf-8",
             },
             body: JSON.stringify({
                 action: "updateData",
@@ -179,26 +293,27 @@
             }),
         });
 
-        const result = await response.json();
-        if (result.success) {
+        // Kiểm tra cập nhật
+        const verifyResponse = await fetch(`${scriptUrl}?action=getData&ticket=${encodeURIComponent(ticket)}`);
+        const verifyData = await verifyResponse.json();
+        
+        if (verifyData && !verifyData.error) {
             alert("Cập nhật thành công!");
-            loadData();
+            originalData = { ...verifyData };
+            displayData(verifyData);
+            document.getElementById("editBtn").style.display = "inline-block";
+            document.getElementById("saveBtn").style.display = "none";
+            document.getElementById("cancelBtn").style.display = "none";
         } else {
-            console.error('Error from server:', result.error); // Log lỗi trả về từ server
-            showError("Có lỗi khi cập nhật dữ liệu!");
+            showError("Có lỗi khi xác nhận cập nhật dữ liệu!");
         }
     } catch (error) {
-        console.error('Error during fetch request:', error); // Log lỗi nếu có khi gửi yêu cầu
+        console.error("Error:", error);
         showError("Có lỗi khi cập nhật dữ liệu!");
     } finally {
         hideLoading();
-        document.getElementById("editBtn").style.display = "inline-block";
-        document.getElementById("saveBtn").style.display = "none";
-        document.getElementById("cancelBtn").style.display = "none";
     }
 }
-
-
 
         function showLoading() {
             document.getElementById("loading").style.display = "block";
