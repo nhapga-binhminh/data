@@ -174,7 +174,7 @@
             tickets.tickets.forEach(ticket => {
                 const option = document.createElement("option");
                 option.value = ticket.ticket;
-                option.textContent = `${ticket.ticket} - ${ticket.vehicleNumber} - ${ticket.datecan}`;
+                option.textContent = `${ticket.datecan} - ${ticket.vehicleNumber} - ${ticket.ticket}`;
                 select.appendChild(option);
             });
         }
