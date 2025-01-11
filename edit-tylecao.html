@@ -128,6 +128,7 @@
         <button id="editBtn" class="btn btn-edit" onclick="startEdit()">Sửa</button>
         <button id="saveBtn" class="btn btn-save" onclick="saveData()" style="display: none;">Lưu</button>
         <button id="cancelBtn" class="btn btn-cancel" onclick="cancelEdit()" style="display: none;">Hủy</button>
+        <button id="deleteBtn" class="btn btn-cancel" onclick="deleteData()" style="display: none;">Xóa</button>
     </div>
 
     <div id="errorMessage" class="error-message"></div>
@@ -254,6 +255,7 @@ function displayData(data) {
             document.getElementById("editBtn").style.display = "none";
             document.getElementById("saveBtn").style.display = "inline-block";
             document.getElementById("cancelBtn").style.display = "inline-block";
+            document.getElementById("deleteBtn").style.display = "inline-block";
         }
 
         function cancelEdit() {
@@ -261,6 +263,7 @@ function displayData(data) {
             document.getElementById("editBtn").style.display = "inline-block";
             document.getElementById("saveBtn").style.display = "none";
             document.getElementById("cancelBtn").style.display = "none";
+            document.getElementById("deleteBtn").style.display = "none";
         }
 
 // Cập nhật hàm saveData để sử dụng tên trường thực tế
@@ -304,6 +307,7 @@ async function saveData() {
             document.getElementById("editBtn").style.display = "inline-block";
             document.getElementById("saveBtn").style.display = "none";
             document.getElementById("cancelBtn").style.display = "none";
+            document.getElementById("deleteBtn").style.display = "none";
         } else {
             showError("Có lỗi khi xác nhận cập nhật dữ liệu!");
         }
@@ -332,6 +336,55 @@ async function saveData() {
         function hideError() {
             document.getElementById("errorMessage").style.display = "none";
         }
+    //delete
+        async function deleteData() {
+    const selectedTicket = document.getElementById('ticketSelect').value;
+    
+    if (!selectedTicket) {
+        showError("Vui lòng chọn số phiếu để xóa!");
+        return;
+    }
+
+    const confirmDelete = confirm("Bạn có chắc chắn muốn xóa phiếu này?");
+    if (!confirmDelete) return;
+
+    showLoading();
+
+    try {
+        const response = await fetch(scriptUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+            },
+            body: JSON.stringify({
+                action: "deleteData",
+                ticket: selectedTicket
+            }),
+        });
+
+        // Wait for 1 second to allow the server to process the deletion
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Reload the ticket list and clear the form
+        await loadEditableTickets();
+        
+        // Clear the form and hide buttons
+        document.getElementById("dataContainer").innerHTML = "";
+        document.getElementById("ticketInfo").innerHTML = "";
+        document.getElementById("editBtn").style.display = "inline-block";
+        document.getElementById("saveBtn").style.display = "none";
+        document.getElementById("cancelBtn").style.display = "none";
+        document.getElementById("deleteBtn").style.display = "none";
+
+        alert("Xóa phiếu thành công!");
+        hideError();
+    } catch (error) {
+        console.error("Error:", error);
+        showError("Có lỗi khi xóa phiếu!");
+    } finally {
+        hideLoading();
+    }
+}
     </script>
 </body>
 </html>
