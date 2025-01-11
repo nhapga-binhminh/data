@@ -170,7 +170,7 @@
             tickets.tickets.forEach(ticket => {
                 const option = document.createElement("option");
                 option.value = ticket.ticket;
-                option.textContent = `${ticket.ticket} - ${ticket.date}`;
+                option.textContent = `${ticket.ticket} - ${ticket.vehicleNumber}`;
                 select.appendChild(option);
             });
         }
