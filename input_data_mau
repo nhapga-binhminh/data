@@ -113,17 +113,7 @@ button {
     </style>
 </head>
 <body>
-      <div class="tab-container">
-        <div class="tab " data-target="formTab">Nhập Liệu Cân Chuyền</div>
-        <div class="tab active" data-target="codeTab">Mã Khác</div>
-    </div>
-    <div class="content active" id="formTab">
-    <div id="status"></div>
-<h1>HHH</h1>
-  </div>
-      <!-- Tab 2: Mã Khác -->
-    <div class="content" id="codeTab">
-    <form id="dataForm">
+<form id="dataForm">
         <!-- Previous form fields remain the same -->
         <div class="group">
               <!-- Ô input ẩn để lưu số phiếu -->
@@ -206,7 +196,6 @@ button {
     </div>
 </div>
     </form>
-    </div>
     <script>
         // Set current date and time in dd/mm/yyyy hh:mm:ss format
 function updateDateTime() {
