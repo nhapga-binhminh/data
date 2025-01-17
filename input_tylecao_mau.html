@@ -5,246 +5,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nhập Liệu</title>
     <style>
-    /* Reset cơ bản */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-body {
-    font-family: Arial, sans-serif;
-    padding: 25px;
-    background-color: #f9f9f9; /* Nền sáng */
-}
+    body {
+        font-family: Arial, sans-serif;
+        padding: 25px;
+        background-color: #f9f9f9;
+    }
 
-.tab-container {
-    display: flex;
-    justify-content: space-around;
-    background-color: #f1f1f1;
-    border-bottom: 2px solid #ddd;
-}
+    .content {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-.tab {
-    flex: 1;
-    text-align: center;
-    padding: 10px;
-    cursor: pointer;
-    background-color: #ddd;
-    border: 1px solid #ccc;
-    transition: background-color 0.3s; /* Hiệu ứng chuyển đổi */
-}
+    form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
 
-.tab:hover {
-    background-color: #ccc; /* Màu khi hover */
-}
+    .group {
+        flex: 1 1 calc(50% - 20px);
+    }
 
-.tab.active {
-    background-color: #fff;
-    border-bottom: none;
-    font-weight: bold;
-}
+    .group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
 
-.main-container {
-    display: flex;
-    flex-direction: row;
-    height: calc(100vh - 40px); /* Trừ chiều cao của tab */
-}
+    .group input, .group select {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
 
-.content {
-    flex: 1;
-    padding: 20px;
-    display: none;
-    overflow-y: auto; /* Cuộn riêng từng tab nếu nội dung quá dài */
-    background-color: #ffffff; /* Nền trắng cho nội dung */
-    border-radius: 5px; /* Bo góc cho nội dung */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng cho nội dung */
-}
+    button {
+        width: 130px;
+        height: 30px;
+        margin: 3px;
+        background: #0725ff;
+        border-radius: 7px;
+        border: none;
+        color: #ffff;
+    }
 
-.content.active {
-    display: block;
-}
-
-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-}
-
-.group {
-    flex: 1 1 calc(50% - 20px); /* Chia đôi chiều ngang */
-}
-
-.group label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.9em;
-    font-weight: bold;
-}
-
-.group input {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-button {
-    width: 130px;
-    height: 30px;
-    margin: 3px;
-    background: #0725ff;
-    border-radius: 7px;
-    border: none;
-    color: #ffff;
-  
-}
-.success {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 1000;
-}
+    .success {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
     </style>
 </head>
 <body>
-<form id="dataForm">
-        <!-- Previous form fields remain the same -->
-        <div class="group">
-              <!-- Ô input ẩn để lưu số phiếu -->
-            <h2 style="text-align: center;font-family: system-ui;">NHẬP LIỆU CÂN CHUYỀN-GÀ MÀU</h2>
-            <input type="hidden" name="sophieu" id="sophieu">
-            <label>Ngày Nhập: <span id="ngayNhap"></span></label>
-            <input type="hidden" name="ngay_nhap" id="hiddenNgayNhap"><br>
-            <label>Ngày Cân: <input type="date" name="ngay_can" required></label>
-        </div>
+    <div class="content">
+        <div id="status"></div>
+        <h2 style="text-align: center;font-family: system-ui;">NHẬP LIỆU CÂN CHUYỀN-GÀ MÀU</h2>
+        <form id="dataForm">
+            <div class="group">
+                <input type="hidden" name="sophieu" id="sophieu">
+                <label>Ngày Nhập: <span id="ngayNhap"></span></label>
+                <input type="hidden" name="ngay_nhap" id="hiddenNgayNhap"><br>
+                <label>Ngày Cân: <input type="date" name="ngay_can" required></label>
+            </div>
 
-        <div class="group">
-            <label>Số Xe: <input type="text" name="so_xe" required ></label>
-            <label>Tên Tài Xế: <input type="text" name="ten_tai_xe" required style=""></label>
-        </div>
-         <div class="group">
-            <label for="loai_ga">Loại Gà</label>
-            <select id="loai_ga" name="loai_ga" required>
-              <option value="Ga Đen">Gà Tam Hoàng Thịt</option>
-              <option value="Ga Ta">Gà Ta</option>
-            </select>
-          </div>
-        <h3>Customer (Trại)</h3>
-        <div class="group">
-            <label>Số Con Trại: <input type="number" name="so_con_trai"></label>
-            <label>Số Kg Trại: <input type="number" step="0.01"  name="so_kg_trai" ></label>
-        </div>
-        
-        <h3>Home (Lò)</h3>
-        <div class="group">
-            <label>Mã Phiếu: <input type="text" name="ma_phieu"  ></label>
-            <label>Số Con Lò: <input type="number" name="so_con_lo"  required></label>
-            <label>Số Kg Lò: <input type="number" step="0.01" name="so_kg_lo"  required></label>
-        </div>
-        <div class="group">
-            <label>Số Con Chết: <input type="number" name="so_con_chet" value="0"></label>
-            <label>Số Kg Chết: <input type="number" step="0.01"  name="so_kg_chet"  value="0"></label>
-        </div>
+            <div class="group">
+                <label>Số Xe: <input type="text" name="so_xe" required></label>
+                <label>Tên Tài Xế: <input type="text" name="ten_tai_xe" required></label>
+            </div>
 
-      <div class="product-column">
-        <h3>Sản Phẩm Chính</h3>
-        <div class="group">
-            <label>Gà Size: <input type="number" name="gasize_1" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_2" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_3" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_4" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_5" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_6" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_7" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_8" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_9" value="0" step="0.01"></label>
-            <label>Gà Size: <input type="number" name="gasize_10" value="0" step="0.01"></label>
-            <label>Gà Xô: <input type="number" name="gasize_xo" value="0" step="0.01"></label>
-            <label>Gà 1/2: <input type="number" name="gasize_12" value="0" step="0.01"></label>
-            <label>Gà Còi: <input type="number" name="gasize_coi" value="0" step="0.01"></label>
-            <label>Gà Loại: <input type="number" name="gasize_loai" value="0" step="0.01"></label>
-        </div>
+            <div class="group">
+                <label for="loai_ga">Loại Gà</label>
+                <select id="loai_ga" name="loai_ga" required>
+                    <option value="Ga Đen">Gà Tam Hoàng Thịt</option>
+                    <option value="Ga Ta">Gà Ta</option>
+                </select>
+            </div>
+
+            <h3>Customer (Trại)</h3>
+            <div class="group">
+                <label>Số Con Trại: <input type="number" name="so_con_trai"></label>
+                <label>Số Kg Trại: <input type="number" step="0.01" name="so_kg_trai"></label>
+            </div>
+
+            <h3>Home (Lò)</h3>
+            <div class="group">
+                <label>Mã Phiếu: <input type="text" name="ma_phieu"></label>
+                <label>Số Con Lò: <input type="number" name="so_con_lo" required></label>
+                <label>Số Kg Lò: <input type="number" step="0.01" name="so_kg_lo" required></label>
+            </div>
+
+            <div class="group">
+                <label>Số Con Chết: <input type="number" name="so_con_chet" value="0"></label>
+                <label>Số Kg Chết: <input type="number" step="0.01" name="so_kg_chet" value="0"></label>
+            </div>
+
+            <div class="product-column">
+                <h3>Sản Phẩm Chính</h3>
+                <div class="group">
+                    <label>Gà Size: <input type="number" name="gasize_1" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_2" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_3" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_4" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_5" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_6" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_7" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_8" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_9" value="0" step="0.01"></label>
+                    <label>Gà Size: <input type="number" name="gasize_10" value="0" step="0.01"></label>
+                    <label>Gà Xô: <input type="number" name="gasize_xo" value="0" step="0.01"></label>
+                    <label>Gà 1/2: <input type="number" name="gasize_12" value="0" step="0.01"></label>
+                    <label>Gà Còi: <input type="number" name="gasize_coi" value="0" step="0.01"></label>
+                    <label>Gà Loại: <input type="number" name="gasize_loai" value="0" step="0.01"></label>
+                </div>
+            </div>
+
+            <div class="product-container">
+                <div class="product-column">
+                    <h3>Sản Phẩm Phụ</h3>
+                    <div class="group">
+                        <label>Tim: <input type="number" name="tim" value="0" step="0.01"></label>
+                        <label>Gan: <input type="number" name="gan" value="0" step="0.01"></label>
+                        <label>Lòng: <input type="number" name="long" value="0" step="0.01"></label>
+                        <label>Mề: <input type="number" name="me" value="0" step="0.01"></label>
+                        <label>Mỡ: <input type="number" name="mo" value="0" step="0.01"></label>
+                        <label>Ngọc Kê: <input type="number" name="ngoc_ke" value="0" step="0.01"></label>
+                    </div>
+                </div>
+                <div class="group">
+                    <button type="submit">Nhập</button>
+                </div>
+                <button id="viewReportButton">Xem Báo Cáo</button>
+                <button id="editReportButton">Sửa Báo Cáo</button>
+            </div>
+        </form>
     </div>
-      <div class="product-container">
-        <div class="product-column">
-        <h3>Sản Phẩm Phụ</h3>
-        <div class="group">
-            <label>Tim: <input type="number"  name="tim" value="0" step="0.01"></label>
-            <label>Gan: <input type="number"  name="gan" value="0" step="0.01"></label>
-            <label>Lòng: <input type="number"  name="long" value="0" step="0.01"></label>
-            <label>Mề: <input type="number"  name="me" value="0" step="0.01"></label>
-            <label>Mỡ: <input type="number"  name="mo" value="0" step="0.01"></label>
-            <label>Ngọc Kê: <input type="number"  name="ngoc_ke" value="0" step="0.01"></label>
-        </div>
-    </div>
-        <div class="group">
-          <button type="submit">Nhập</button>
-        </div>
-        <button id="viewReportButton">Xem Báo Cáo</button>
-         <button id="editReportButton">Sửa Báo Cáo</button>
-<!-- Form Báo Cáo -->
+
     <div id="reportForm" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1000;">
-    <div style="position: relative; margin: 50px auto; width: 95%; max-width: 1200px; height: 90%; background: white; padding: 5px; border-radius: 8px;">
-        <button id="closeReportButton" style="position: absolute; top: 10px; right: 10px;">&times;</button>
-      <iframe src="" style="width: 100%; height: 100%; border: none;"></iframe>
+        <div style="position: relative; margin: 50px auto; width: 95%; max-width: 1200px; height: 90%; background: white; padding: 5px; border-radius: 8px;">
+            <button id="closeReportButton" style="position: absolute; top: 10px; right: 10px;">&times;</button>
+            <iframe src="" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
     </div>
-</div>
-    </form>
+
     <script>
-        // Set current date and time in dd/mm/yyyy hh:mm:ss format
-function updateDateTime() {
-    const now = new Date();
-    
-    // Format dd/mm/yyyy
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const year = now.getFullYear();
-    
-    // Format hh:mm:ss
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    
-    // Combine into dd/mm/yyyy hh:mm:ss
-    const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-    
-    // Update the elements
-    document.getElementById('ngayNhap').textContent = formattedDateTime;
-    document.getElementById('hiddenNgayNhap').value = `${year}-${month}-${day}T${hours}:${minutes}`;
-}
+        function updateDateTime() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('ngayNhap').textContent = formattedDateTime;
+            document.getElementById('hiddenNgayNhap').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
 
-// Call the function
-updateDateTime();
-
+        updateDateTime();
 
         document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            
-            // Get form data
             const formData = new FormData(this);
             const data = {};
             formData.forEach((value, key) => {
                 data[key] = value;
             });
             
-            // Add ngayNhap
             data.ngayNhap = document.getElementById('ngayNhap').textContent;
-
-            // Replace with your deployed Google Apps Script URL
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzxwu8yMjd0R19qMF7I07kA-ev8BCYVVvUN1D-9Ot8gFgB7Sm1Df3QZpHaC4bbd4N6jwQ/exec';
 
-            // Send data using JSONP to avoid CORS
-            const queryString = Object.keys(data)
-                .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
-                .join('&');
-
-            // Create a temporary form and submit it
             const tempForm = document.createElement('form');
             tempForm.action = scriptURL;
             tempForm.method = 'POST';
@@ -256,7 +202,6 @@ updateDateTime();
             input.value = JSON.stringify(data);
             tempForm.appendChild(input);
 
-            // Create hidden iframe for response
             const iframe = document.createElement('iframe');
             iframe.name = 'hidden-iframe';
             iframe.style.display = 'none';
@@ -266,7 +211,6 @@ updateDateTime();
                 document.getElementById('status').innerHTML = '<p class="success">Dữ liệu đã được gửi thành công!</p>';
                 document.getElementById('dataForm').reset();
                 updateDateTime();
-                 // Ẩn thông báo sau 3 giây
                 setTimeout(() => {
                     document.getElementById('status').innerHTML = '';
                 }, 3000);
@@ -277,40 +221,23 @@ updateDateTime();
             tempForm.submit();
             document.body.removeChild(tempForm);
         });
-        
-                // Tab Switching Logic
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.content');
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                contents.forEach(c => c.classList.remove('active'));
+        const reportForm = document.getElementById('reportForm');
+        const iframe = reportForm.querySelector('iframe');
 
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.target).classList.add('active');
-            });
+        function toggleReport(show, url = '') {
+            reportForm.style.display = show ? 'block' : 'none';
+            if (show && url) iframe.src = url;
+        }
+
+        document.getElementById('viewReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/report-form.html');
+        document.getElementById('editReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/edit-tylecao.html');
+        document.getElementById('closeReportButton').onclick = () => toggleReport(false);
+        reportForm.onclick = (e) => { if (e.target === reportForm) toggleReport(false); };
+
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            if (!input.value) input.value = 0;
         });
-        
-// Xử lý báo cáo (mở/đóng iframe hiển thị)
-const reportForm = document.getElementById('reportForm');
-const iframe = reportForm.querySelector('iframe');
-
-function toggleReport(show, url = '') {
-    reportForm.style.display = show ? 'block' : 'none';
-    if (show && url) iframe.src = url;
-}
-
-document.getElementById('viewReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/report-form.html');
-document.getElementById('editReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/edit-tylecao.html');
-document.getElementById('closeReportButton').onclick = () => toggleReport(false);
-
-reportForm.onclick = (e) => { if (e.target === reportForm) toggleReport(false); };
-
-// Đặt giá trị mặc định cho input number nếu không có giá trị
-document.querySelectorAll('input[type="number"]').forEach(input => {
-    if (!input.value) input.value = 0;
-});
     </script>
 </body>
-</html>                     
+</html>
