@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống Kê Từ Google Sheets</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw3ks2pmbAVf1gbKYtPWBr-opcZMMd3ndqvoDTiR5ihHx5c_xLJDnvYYn2PbWlLl3tT6A/exec';
+
+        // Gửi yêu cầu có lọc ngày
+        function filterData() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+        
+            if (!startDate || !endDate) {
+                alert('Vui lòng chọn cả hai ngày hợp lệ.');
+                return;
+            }
+        
+            fetch(`${scriptURL}?startDate=${startDate}&endDate=${endDate}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => renderTable(data))
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Đã xảy ra lỗi khi lấy dữ liệu. Vui lòng kiểm tra Apps Script.');
+                });
+        }
+
+function formatDate(dateString) {
+    const date = new Date(dateString); // Tạo đối tượng ngày từ chuỗi
+    const day = String(date.getDate()).padStart(2, '0'); // Lấy ngày, đảm bảo 2 chữ số
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng (bắt đầu từ 0)
+    const year = date.getFullYear(); // Lấy năm
+    return `${day}-${month}-${year}`; // Trả về chuỗi ngày dạng DD-MM-YYYY
+}
+
+
+        // Hiển thị dữ liệu lên bảng
+function renderTable(data) {
+    const tableBody = document.querySelector('#dataTable tbody');
+    tableBody.innerHTML = '';
+
+    if (data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5">Không có dữ liệu trong khoảng thời gian này.</td></tr>';
+        return;
+    }
+
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${row[0]}</td>
+            <td>${formatDate(row[2])}</td> <!-- Ngày Cân -->
+            <td>${row[3]}</td>
+            <td>${row[4]}</td>
+            <td>${row[5]}</td>
+            <td>${row[6]}</td>
+            <td>${row[7]}</td>
+            <td>${row[8]}</td>
+            <td>${row[9]}</td>
+            <td>${row[10]}</td>
+            <td>${row[11]}</td>
+            <td>${row[12]}</td>
+            <td>${row[13]}</td>
+            <td>${row[14]}</td>
+            <td>${row[15]}</td>
+            <td>${row[16]}</td>
+            <td>${row[17]}</td>
+            <td>${row[18]}</td>
+            <td>${row[19]}</td>
+            <td>${row[20]}</td>
+            <td>${row[21]}</td>
+            <td>${row[22]}</td>
+            <td>${row[23]}</td>
+            <td>${row[24]}</td>
+            <td>${row[25]}</td>
+            <td>${row[26]}</td>
+            <td>${row[27]}</td>
+            <td>${row[28]}</td>
+            <td>${row[29]}</td>
+            <td>${row[30]}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
+
+    </script>
+</head>
+<body>
+    <h1>Thống Kê Dữ Liệu</h1>
+    <label for="startDate">Từ ngày:</label>
+    <input type="date" id="startDate">
+
+    <label for="endDate">Đến ngày:</label>
+    <input type="date" id="endDate">
+
+    <button onclick="filterData()">Thống Kê</button>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Số Phiếu</th>
+                <th>Ngày Cân</th>
+                <th>Số Xe</th>
+                <th>Tên Tài Xế</th>
+                <th>Số Con Trại</th>
+                <th>Số Kg Trại</th>
+                <th>Mã Phiếu</th>
+                <th>Số Con Lò</th>
+                <th>Số Kg Lò</th> 
+                <th>Số Con Chết</th>
+                <th>Số Kg Chết</th>
+                <th>Gà Lựa 9P+Lotteria(Con)</th>
+                <th>Gà Lựa 9P+Lotteria(Kg)</th>
+                <th>Đùi 75</th>
+                <th>Đùi 55</th>
+                <th>Đùi 45-55</th>
+                <th>Đùi Xô Lớn</th>
+                <th>Đùi Xô Nhỏ</th>
+                <th>Gà CN Bọng (Con)</th>
+                <th>Gà CN Bọng (Kg)</th>
+                <th>Cánh</th>
+                <th>Đầu</th>
+                <th>Chân</th>
+                <th>Bọng Ức</th>
+                <th>Tim:</th>
+                <th>Gan:</th>
+                <th>Lòng:</th>
+                <th>Mề:</th>
+                <th>Mỡ:</th>
+                <th>Ngọc Kê:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+</body>
+</html>
