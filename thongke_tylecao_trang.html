@@ -9,6 +9,7 @@
             border-collapse: collapse;
             width: 100%;
             margin-top: 20px;
+            table-layout: fixed;
         }
         th, td {
             border: 1px solid #ddd;
@@ -17,6 +18,7 @@
         }
         th {
             background-color: #f2f2f2;
+            position: relative;
         }
     </style>
     <script>
@@ -24,26 +26,27 @@
 
         // Gửi yêu cầu có lọc ngày
         function filterData() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-        
-            if (!startDate || !endDate) {
-                alert('Vui lòng chọn cả hai ngày hợp lệ.');
-                return;
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+            
+                if (!startDate || !endDate) {
+                    alert('Vui lòng chọn cả hai ngày hợp lệ.');
+                    return;
+                }
+            
+                fetch(`${scriptURL}?startDate=${startDate}&endDate=${endDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        renderTable(data);
+                    })
+                    .catch(error => {
+                        console.error('Error details:', error);
+                        alert('Đã xảy ra lỗi: ' + error.message);
+                    });
             }
-        
-            fetch(`${scriptURL}?startDate=${startDate}&endDate=${endDate}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => renderTable(data))
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Đã xảy ra lỗi khi lấy dữ liệu. Vui lòng kiểm tra Apps Script.');
-                });
-        }
-
 function formatDate(dateString) {
     const date = new Date(dateString); // Tạo đối tượng ngày từ chuỗi
     const day = String(date.getDate()).padStart(2, '0'); // Lấy ngày, đảm bảo 2 chữ số
@@ -152,5 +155,43 @@ function renderTable(data) {
             <!-- Data will be dynamically inserted here -->
         </tbody>
     </table>
+    <script>
+              // Resize logic
+        let startX, startWidth, resizableCol;
+
+        function startResize(e) {
+            resizableCol = e.target.parentElement;
+            startX = e.pageX;
+            startWidth = resizableCol.offsetWidth;
+            document.addEventListener('mousemove', resizeColumn);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function resizeColumn(e) {
+            const newWidth = startWidth + (e.pageX - startX);
+            if (newWidth > 20) {
+                resizableCol.style.width = `${newWidth}px`;
+            }
+        }
+
+        function stopResize() {
+            document.removeEventListener('mousemove', resizeColumn);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('th').forEach(th => {
+                const resizeHandle = document.createElement('div');
+                resizeHandle.style.position = 'absolute';
+                resizeHandle.style.right = '0';
+                resizeHandle.style.top = '0';
+                resizeHandle.style.width = '5px';
+                resizeHandle.style.height = '100%';
+                resizeHandle.style.cursor = 'col-resize';
+                resizeHandle.addEventListener('mousedown', startResize);
+                th.appendChild(resizeHandle);
+            });
+        });
+    </script>
 </body>
 </html>
