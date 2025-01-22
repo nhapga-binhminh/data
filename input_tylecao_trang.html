@@ -147,6 +147,7 @@
                     </div>
                     <button id="viewReportButton">Xem Báo Cáo</button>
                     <button id="editReportButton">Sửa Báo Cáo</button>
+                    <button id="thongkeButton">Thống Kê</button>
                 </div>
             </form>
         </div>
@@ -228,6 +229,7 @@
 
         document.getElementById('viewReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/report-form.html');
         document.getElementById('editReportButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/edit-tylecao.html');
+        document.getElementById('thongkeButton').onclick = () => toggleReport(true, 'https://nhapga-binhminh.github.io/data/thongke_tylecao_trang.html');
         document.getElementById('closeReportButton').onclick = () => toggleReport(false);
         reportForm.onclick = (e) => { if (e.target === reportForm) toggleReport(false); };
 
