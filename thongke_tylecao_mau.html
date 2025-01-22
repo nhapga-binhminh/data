@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống Kê Từ Google Sheets</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: relative;
+        }
+    </style>
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzZ4sApfhJH8xgiRpIhVrhlY81F3Iqce2avuK6yHEuWp8vA0EoX7ZW0WtLku4T2L4JcHQ/exec';
+
+        // Gửi yêu cầu có lọc ngày
+        function filterData() {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+            
+                if (!startDate || !endDate) {
+                    alert('Vui lòng chọn cả hai ngày hợp lệ.');
+                    return;
+                }
+            
+                fetch(`${scriptURL}?startDate=${startDate}&endDate=${endDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        renderTable(data);
+                    })
+                    .catch(error => {
+                        console.error('Error details:', error);
+                        alert('Đã xảy ra lỗi: ' + error.message);
+                    });
+            }
+function formatDate(dateString) {
+    const date = new Date(dateString); // Tạo đối tượng ngày từ chuỗi
+    const day = String(date.getDate()).padStart(2, '0'); // Lấy ngày, đảm bảo 2 chữ số
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng (bắt đầu từ 0)
+    const year = date.getFullYear(); // Lấy năm
+    return `${day}-${month}-${year}`; // Trả về chuỗi ngày dạng DD-MM-YYYY
+}
+
+
+        // Hiển thị dữ liệu lên bảng
+function renderTable(data) {
+    const tableBody = document.querySelector('#dataTable tbody');
+    tableBody.innerHTML = '';
+
+    if (data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5">Không có dữ liệu trong khoảng thời gian này.</td></tr>';
+        return;
+    }
+
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${row[0]}</td>
+            <td>${formatDate(row[2])}</td> <!-- Ngày Cân -->
+            <td>${row[3]}</td>
+            <td>${row[4]}</td>
+            <td>${row[5]}</td>  
+            <td>${row[6]}</td>
+            <td>${row[7]}</td>
+            <td>${row[9]}</td>
+            <td>${row[10]}</td>
+            <td>${row[11]}</td>
+            <td>${row[12]}</td>
+            <td>${row[13]}</td>
+            <td>${row[14]}</td>
+            <td>${row[15]}</td>
+            <td>${row[16]}</td>
+            <td>${row[17]}</td>
+            <td>${row[18]}</td>
+            <td>${row[19]}</td>
+            <td>${row[20]}</td>
+            <td>${row[21]}</td>
+            <td>${row[22]}</td>
+            <td>${row[23]}</td>
+            <td>${row[24]}</td>
+            <td>${row[25]}</td>
+            <td>${row[26]}</td>
+            <td>${row[27]}</td>
+            <td>${row[28]}</td>
+            <td>${row[29]}</td>
+            <td>${row[30]}</td>
+            <td>${row[31]}</td>
+            <td>${row[32]}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
+
+    </script>
+</head>
+<body>
+    <h1>Thống Kê Dữ Liệu</h1>
+    <label for="startDate">Từ ngày:</label>
+    <input type="date" id="startDate">
+
+    <label for="endDate">Đến ngày:</label>
+    <input type="date" id="endDate">
+
+    <button onclick="filterData()">Thống Kê</button>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Số Phiếu</th>
+                <th>Ngày Cân</th>
+                <th>Số Xe</th>
+                <th>Tên Tài Xế</th>
+                <th>Loại Gà</th>
+                <th>Số Con Trại</th>
+                <th>Số Kg Trại</th>
+                <th>Số Con Lò</th>
+                <th>Số Kg Lò</th> 
+                <th>Số Con Chết</th>
+                <th>Số Kg Chết</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Size</th>
+                <th>Gà Xô</th>
+                <th>Gà 1/2</th>
+                <th>Gà Còi</th>
+                <th>Gà Loại</th>
+                <th>Tim:</th>
+                <th>Gan:</th>
+                <th>Lòng:</th>
+                <th>Mề:</th>
+                <th>Mỡ:</th>
+                <th>Ngọc Kê:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+    <script>
+              // Resize logic
+        let startX, startWidth, resizableCol;
+
+        function startResize(e) {
+            resizableCol = e.target.parentElement;
+            startX = e.pageX;
+            startWidth = resizableCol.offsetWidth;
+            document.addEventListener('mousemove', resizeColumn);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function resizeColumn(e) {
+            const newWidth = startWidth + (e.pageX - startX);
+            if (newWidth > 20) {
+                resizableCol.style.width = `${newWidth}px`;
+            }
+        }
+
+        function stopResize() {
+            document.removeEventListener('mousemove', resizeColumn);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('th').forEach(th => {
+                const resizeHandle = document.createElement('div');
+                resizeHandle.style.position = 'absolute';
+                resizeHandle.style.right = '0';
+                resizeHandle.style.top = '0';
+                resizeHandle.style.width = '5px';
+                resizeHandle.style.height = '100%';
+                resizeHandle.style.cursor = 'col-resize';
+                resizeHandle.addEventListener('mousedown', startResize);
+                th.appendChild(resizeHandle);
+            });
+        });
+    </script>
+</body>
+</html>
